@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Button Grid with Titles and Page Breaks</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .button-grid {
+      width: 80%;
+      margin: 0 auto;
+      display: inline-block;
+    }
+
+    .button-grid button {
+      border: 1px solid #E0E0E0; /* Consistent border style */
+      border-radius: 1px; /* Consistent rounded corners */
+      padding: 5px 15px; /* Consistent padding */
+      background-color: #F8F8F8; /* Consistent background color */
+  
+      cursor: pointer;
+      font-size: 10px;
+      max-width: 65px;
+      display: inline-block;
+    }
+
+    .button-grid button.active {
+      transform: translateY(0px);
+      background-color: #8ab071; /* Slightly darker background for active state */
+    }
+
+    .title {
+      font-weight: regular;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .total-display {
+      margin-top: 10px;
+    }
+
+    /* Left-justify on wider screens */
+    @media (min-width: 768px) {
+      .button-grid {
+        justify-content: flex-start;
+      }
+    }
+
+    @media print {
+      .button-grid {
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="button-grid" id="buttonGrid"></div>
+  <div class="total-display" id="totalDisplay">Total: 0</div>
+
+  <script>
+    function createButtonGrid() {
+      const numRows = 10;
+      const numCols = 5;
+      const values = [0, 0.25, 0.5, 0.75, 1];
+      const titles = ["1. Color Preference", "2. Need for Movement", "3. Visual Latency",
+        "4. Visual Field Preferences", "5. Difficulty With Visual Complexity",
+        "6. Need for Light", "7. Difficulty with Distance Viewing",
+        "8. Atypical Visual Reflexes", "9. Difficulty With Visual Novelty",
+        "10. Absence of Visually Guided Reach"];
+      const grid = document.getElementById('buttonGrid');
+
+      for (let row = 0; row < numRows; row++) {
+        // Create and append title
+        let title = document.createElement('div');
+        title.classList.add('title');
+        title.textContent = titles[row];
+        grid.appendChild(title);
+
+        // Create and append single row of buttons
+        let buttonRow = document.createElement('div');
+
+        for (let col = 0; col < numCols; col++) {
+          let button = document.createElement('button');
+          button.textContent = `${values[col]}`;
+          button.dataset.value = values[col];
+          button.dataset.row = row;
+          button.onclick = () => handleButtonClick(button, row);
+          buttonRow.appendChild(button);
+        }
+
+        grid.appendChild(buttonRow);
+      }
+    }
+
+    function handleButtonClick(button, row) {
+      const buttonsInRow = document.querySelectorAll(`[data-row='${row}']`);
+      buttonsInRow.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      updateTotal();
+    }
+
+    function updateTotal() {
+      let total = 0;
+      document.querySelectorAll('.button-grid button.active').forEach(button => {
+        total += parseFloat(button.dataset.value);
+      });
+      document.getElementById('totalDisplay').textContent = `Total: ${total.toFixed(2)}`;
+    }
+
+    createButtonGrid();
+  </script>
+</body>
+</html>
