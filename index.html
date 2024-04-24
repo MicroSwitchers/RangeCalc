@@ -1,15 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Button Grid with Titles and Page Breaks</title>
+  <title>Calculation Checker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A calculation checker for Dr. Roman-Lantzy's CVI Range Rating II assessment method.">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
       text-align: center;
       margin: 0;
       padding: 20px;
-      background-color: #83a19d;
+      background-color: #c8d4d8;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 20px;
+    }
+
+    h2 {
+      color: #474747;
+      font-size: 16px;
+    }
+
+    .text-input {
+      margin-top: 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
     }
 
     .button-grid {
@@ -24,13 +42,11 @@
       border: none;
       border-radius: 4px;
       padding: 10px;
-      background-color: #e0e4d9;
+      background-color: #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       cursor: pointer;
-      font-size: 14px;
-      max-width: none;
-      display: block;
-      color: #333333;
+      font-size: 16px;
+      color: #333;
       transition: background-color 0.3s ease;
     }
 
@@ -39,46 +55,82 @@
     }
 
     .button-grid button.active {
-      background-color: #4879b9;
-      color: #ffffff;
+      background-color: #3072b9;
+      color: #fff;
     }
 
     .title {
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       text-align: center;
       width: 100%;
-      font-size: 16px;
-      color: #333333;
+      font-size: 18px;
+      color: #333;
     }
 
     .total-display {
+      background-color: #385d84;
+      color: #fff;
+      padding: 10px;
       margin-top: 20px;
       font-size: 24px;
-      color: #376b92;
     }
 
-    @media print {
-      .button-grid {
-        page-break-after: always;
-      }
+    .datawarning {
+      color: #2e2e2e;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      font-size: 14px;
+      
+    }
+
+    .credits {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #676767;
     }
   </style>
 </head>
 <body>
+  <h1>CVI Range Rating II - Calculation Checker</h1>
+  <h2>For Dr. Roman-Lantzy's Within-CVI Characteristics Assessment Method</h2>
+
   <div class="button-grid" id="buttonGrid"></div>
   <div class="total-display" id="totalDisplay">Total: 0</div>
+
+  <div class="text-input">
+    <label for="notes">Temporary Notes:</label><br>
+    <textarea id="notes" name="notes" rows="4" cols="50"></textarea>
+  </div>
+
+  <div class="datawarning">
+    No data is collected or saved. Please record the results on a CVI Range Assessment form before closing.
+  </div>
+
+  <div class="credits">
+    <p>Source: The CVI Range Rating II assessment method and calculation process are the work of Dr. Christine Roman-Lantzy, as detailed in her book:</p>
+    <p>Roman-Lantzy, C. (2018). Cortical Visual Impairment: An Approach to Assessment and Intervention (2nd ed.). American Printing House for the Blind.</p>
+    <p>This calculator was created by Niall Brown, Early Childhood Vision Consultant, to assist with double-checking assessment totals.</p>
+  </div>
 
   <script>
     function createButtonGrid() {
       const numRows = 10;
       const numCols = 5;
       const values = [0, 0.25, 0.5, 0.75, 1];
-      const titles = ["1. Color Preference", "2. Need for Movement", "3. Visual Latency",
-        "4. Visual Field Preferences", "5. Difficulty With Visual Complexity",
-        "6. Need for Light", "7. Difficulty with Distance Viewing",
-        "8. Atypical Visual Reflexes", "9. Difficulty With Visual Novelty",
-        "10. Absence of Visually Guided Reach"];
+      const titles = [
+        "1. Color Preference",
+        "2. Need for Movement", 
+        "3. Visual Latency",
+        "4. Visual Field Preferences",
+        "5. Difficulty With Visual Complexity",
+        "6. Need for Light",
+        "7. Difficulty with Distance Viewing",
+        "8. Atypical Visual Reflexes",
+        "9. Difficulty With Visual Novelty",
+        "10. Absence of Visually Guided Reach"
+      ];
       const grid = document.getElementById('buttonGrid');
 
       for (let row = 0; row < numRows; row++) {
@@ -89,11 +141,10 @@
 
         for (let col = 0; col < numCols; col++) {
           let button = document.createElement('button');
-          button.textContent = `${values[col]}`;
+          button.textContent = values[col].toString();
           button.dataset.value = values[col];
           button.dataset.row = row;
           button.onclick = () => handleButtonClick(button, row);
-          button.style.width = `${button.textContent.length * 10 + 20}px`;
           grid.appendChild(button);
         }
       }
