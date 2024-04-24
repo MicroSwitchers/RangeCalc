@@ -2,50 +2,60 @@
 <html>
 <head>
   <title>Button Grid with Titles and Page Breaks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #83a19d;
     }
 
     .button-grid {
-      width: 80%;
-      margin: 0 auto;
-      display: inline-block;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .button-grid button {
-      border: 1px solid #E0E0E0; /* Consistent border style */
-      border-radius: 1px; /* Consistent rounded corners */
-      padding: 5px 15px; /* Consistent padding */
-      background-color: #F8F8F8; /* Consistent background color */
-  
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      background-color: #e0e4d9;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       cursor: pointer;
-      font-size: 10px;
-      max-width: 65px;
-      display: inline-block;
+      font-size: 14px;
+      max-width: none;
+      display: block;
+      color: #333333;
+      transition: background-color 0.3s ease;
+    }
+
+    .button-grid button:hover {
+      background-color: #f0f0f0;
     }
 
     .button-grid button.active {
-      transform: translateY(0px);
-      background-color: #8ab071; /* Slightly darker background for active state */
+      background-color: #4879b9;
+      color: #ffffff;
     }
 
     .title {
-      font-weight: regular;
+      font-weight: bold;
       margin-bottom: 10px;
       text-align: center;
+      width: 100%;
+      font-size: 16px;
+      color: #333333;
     }
 
     .total-display {
-      margin-top: 10px;
-    }
-
-    /* Left-justify on wider screens */
-    @media (min-width: 768px) {
-      .button-grid {
-        justify-content: flex-start;
-      }
+      margin-top: 20px;
+      font-size: 24px;
+      color: #376b92;
     }
 
     @media print {
@@ -72,14 +82,10 @@
       const grid = document.getElementById('buttonGrid');
 
       for (let row = 0; row < numRows; row++) {
-        // Create and append title
         let title = document.createElement('div');
         title.classList.add('title');
         title.textContent = titles[row];
         grid.appendChild(title);
-
-        // Create and append single row of buttons
-        let buttonRow = document.createElement('div');
 
         for (let col = 0; col < numCols; col++) {
           let button = document.createElement('button');
@@ -87,10 +93,9 @@
           button.dataset.value = values[col];
           button.dataset.row = row;
           button.onclick = () => handleButtonClick(button, row);
-          buttonRow.appendChild(button);
+          button.style.width = `${button.textContent.length * 10 + 20}px`;
+          grid.appendChild(button);
         }
-
-        grid.appendChild(buttonRow);
       }
     }
 
