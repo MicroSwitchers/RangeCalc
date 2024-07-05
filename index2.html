@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CVI Range Rating II Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A calculation checker for Dr. Roman-Lantzy's CVI Range Rating II assessment method.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #1e1e1e;
+      --primary-color: #47555d;
+      --title-colour: rgb(192, 61, 61);
+      --secondary-color: #83adc3;
+      --text-color: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --button-bg: #3c3c3c;
+      --button-hover: #4a4a4a;
+      --button-active: #50437b;
+      --warning-color: #b07d62;
+      --placeholder-color: #bd6e6e;
+      --placeholder-active: #a89335;
+      --placeholder-selected: #416d43;
+      --success-color: #4CAF50;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 16px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #282828;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .app-header {
+      background-color: #252a2e;
+      padding: 25px 20px;
+      border-radius: 10px 10px 0 0;
+      margin: -20px -20px 20px -20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    h1 {
+      color: var(--title-colour);
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(45deg, #c03d3d, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .title-divider {
+      width: 80%;
+      max-width: 300px;
+      height: 4px;
+      background: linear-gradient(to right, transparent, var(--title-colour), transparent);
+      margin: 20px auto;
+    }
+    h2 {
+      color: #b0b0b0;
+      font-size: 18px;
+      font-weight: 400;
+      margin-top: 0;
+      margin-bottom: 0;
+      text-align: center;
+      font-style: italic;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    .title-icon {
+      font-size: 0.8em;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .button-grid button {
+      border: none;
+      border-radius: 4px;
+      padding: 10px 5px;
+      background-color: var(--button-bg);
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .button-grid button:hover {
+      background-color: var(--button-hover);
+    }
+    .button-grid button.active {
+      background-color: var(--button-active);
+      color: var(--text-color);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .button-grid button.placeholder {
+      background-color: var(--placeholder-color);
+      width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+    .button-grid button.placeholder.selected {
+      background-color: var(--placeholder-selected);
+    }
+    .button-grid button.placeholder.active {
+      background-color: var(--placeholder-active);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .title {
+      font-weight: 600;
+      margin: 16px 0 8px;
+      text-align: left;
+      grid-column: 1 / -1;
+      font-size: 14px;
+      color: var(--secondary-color);
+    }
+    .result-container {
+      background-color: rgba(70, 162, 208, 0.1);
+      border: 1px solid var(--secondary-color);
+      color: var(--text-color);
+      padding: 16px;
+      margin-top: 24px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .total-display {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .warning {
+      color: var(--warning-color);
+      font-size: 14px;
+      font-style: italic;
+    }
+    .datawarning {
+      color: var(--text-secondary);
+      margin: 24px 0;
+      font-size: 14px;
+      text-align: center;
+    }
+    .all-clear-button {
+      display: block;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      transition: all 0.3s ease;
+    }
+    .all-clear-button:hover {
+      opacity: 0.9;
+    }
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--secondary-color);
+    }
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .footer-section {
+      flex: 1 1 300px;
+    }
+    .footer-section h3 {
+      color: var(--primary-color);
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .footer-section p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0 0 8px 0;
+    }
+    .warning.success {
+      color: var(--success-color);
+    }
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      h2 {
+        font-size: 14px;
+      }
+      .button-grid {
+        gap: 6px;
+      }
+      .button-grid button {
+        font-size: 12px;
+        padding: 8px 4px;
+      }
+      .title {
+        font-size: 13px;
+      }
+      .total-display {
+        font-size: 24px;
+      }
+      .footer-section {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app-header">
+      <h1><span class="title-icon">📊</span> CVI Range Rating II Calculator</h1>
+      <div class="title-divider"></div>
+      <h2>Based on Dr. Roman-Lantzy's Within-CVI Characteristics Assessment Method</h2>
+    </div>
+
+    <div class="button-grid" id="buttonGrid"></div>
+    <div class="result-container">
+      <div class="total-display" id="totalDisplay">Total: 0</div>
+      <div class="warning" id="warning">Characteristics scored: <span id="scoredCount">0</span>/10</div>
+    </div>
+
+    <button class="all-clear-button" id="allClearButton">All Clear</button>
+
+    <div class="datawarning">
+      No data is collected or saved. Please record the results on a CVI Range Assessment form before closing.
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About this Calculator</h3>
+          <p>This calculator assists with double-checking assessment totals for the CVI Range Rating II method. This is based on the work of Dr. Roman-Lantzy.</p>
+          <p>Created by Niall Brown, Early Childhood Vision Consultant.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Source</h3>
+          <p>The CVI Range Rating II assessment method and calculation process are the work of Dr. Christine Roman-Lantzy.</p>
+          <p>Roman-Lantzy, C. (2018). Cortical Visual Impairment: An Approach to Assessment and Intervention (2nd ed.). American Printing House for the Blind.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function createButtonGrid() {
+        const numRows = 10;
+        const numCols = 5;
+        const values = [0, 0.25, 0.5, 0.75, 1];
+        const titles = [
+          "1. Color Preference",
+          "2. Need for Movement", 
+          "3. Visual Latency",
+          "4. Visual Field Preferences",
+          "5. Difficulty With Visual Complexity",
+          "6. Need for Light",
+          "7. Difficulty with Distance Viewing",
+          "8. Atypical Visual Reflexes",
+          "9. Difficulty With Visual Novelty",
+          "10. Absence of Visually Guided Reach"
+        ];
+        const grid = document.getElementById('buttonGrid');
+
+        for (let row = 0; row < numRows; row++) {
+          let title = document.createElement('div');
+          title.classList.add('title');
+          title.textContent = titles[row];
+          grid.appendChild(title);
+
+          for (let col = 0; col < numCols; col++) {
+            let button = document.createElement('button');
+            button.textContent = values[col] === 0 ? '0' : values[col] === 1 ? '1' : `.${(values[col] * 100).toFixed(0)}`;
+            button.dataset.value = values[col];
+            button.dataset.row = row;
+            button.onclick = () => handleButtonClick(button, row);
+            grid.appendChild(button);
+          }
+
+          let placeholderButton = document.createElement('button');
+          placeholderButton.classList.add('placeholder');
+          placeholderButton.dataset.row = row;
+          placeholderButton.onclick = () => handlePlaceholderClick(placeholderButton, row);
+          grid.appendChild(placeholderButton);
+        }
+      }
+
+      function handleButtonClick(button, row) {
+        const buttonsInRow = document.querySelectorAll(`[data-row='${row}']`);
+        const placeholderButton = document.querySelector(`.placeholder[data-row='${row}']`);
+        
+        buttonsInRow.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        placeholderButton.classList.remove('active');
+        placeholderButton.classList.add('selected');
+        
+        updateTotal();
+      }
+
+      function handlePlaceholderClick(button, row) {
+        const buttonsInRow = document.querySelectorAll(`[data-row='${row}']`);
+        
+        if (button.classList.contains('active')) {
+          button.classList.remove('active');
+        } else {
+          buttonsInRow.forEach(btn => btn.classList.remove('active', 'selected'));
+          button.classList.add('active');
+          button.classList.remove('selected');
+        }
+        
+        updateTotal();
+      }
+
+      function updateTotal() {
+        let total = 0;
+        let scoredCharacteristics = 0;
+        document.querySelectorAll('.button-grid button.active:not(.placeholder)').forEach(button => {
+          total += parseFloat(button.dataset.value);
+          scoredCharacteristics++;
+        });
+        document.getElementById('totalDisplay').textContent = `Total: ${total.toFixed(2)}`;
+        document.getElementById('scoredCount').textContent = scoredCharacteristics;
+
+        const warningElement = document.getElementById('warning');
+        if (scoredCharacteristics === 10) {
+          warningElement.classList.add('success');
+        } else {
+          warningElement.classList.remove('success');
+        }
+      }
+
+      function clearAllSelections() {
+        document.querySelectorAll('.button-grid button').forEach(button => {
+          button.classList.remove('active', 'selected');
+        });
+        updateTotal();
+      }
+
+      createButtonGrid();
+
+      document.getElementById('allClearButton').addEventListener('click', clearAllSelections);
+    });
+  </script>
+</body>
+</html>
