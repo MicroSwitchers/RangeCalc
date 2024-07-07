@@ -264,6 +264,8 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      let isDataEntered = false;
+
       function createButtonGrid() {
         const numRows = 10;
         const numCols = 5;
@@ -316,6 +318,7 @@
         placeholderButton.classList.add('selected');
         
         updateTotal();
+        isDataEntered = true;
       }
 
       function handlePlaceholderClick(button, row) {
@@ -330,6 +333,7 @@
         }
         
         updateTotal();
+        isDataEntered = true;
       }
 
       function updateTotal() {
@@ -355,11 +359,22 @@
           button.classList.remove('active', 'selected');
         });
         updateTotal();
+        isDataEntered = false;
       }
 
       createButtonGrid();
 
       document.getElementById('allClearButton').addEventListener('click', clearAllSelections);
+
+      // Add event listener for beforeunload event
+      window.addEventListener('beforeunload', function (e) {
+        if (isDataEntered) {
+          // Cancel the event
+          e.preventDefault();
+          // Chrome requires returnValue to be set
+          e.returnValue = '';
+        }
+      });
     });
   </script>
 </body>
