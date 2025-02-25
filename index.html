@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A calculation checker for Dr. Roman-Lantzy's CVI Range Rating II assessment method.">
+  <!-- Favicon -->
+  <link rel="icon" href="rangeiiicon.png" type="image/png">
+  <!-- PWA Support -->
+  <link rel="apple-touch-icon" href="rangeiiicon.png">
+  <meta name="theme-color" content="#252a2e">
+  <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -17,6 +23,7 @@
       --button-bg: #3c3c3c;
       --button-hover: #4a4a4a;
       --button-active: #50437b;
+      --button-focus: #6a5a9e;
       --warning-color: #b07d62;
       --placeholder-color: #bd6e6e;
       --placeholder-active: #a89335;
@@ -49,12 +56,24 @@
       margin: -20px -20px 20px -20px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     }
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    .app-logo {
+      width: 48px;
+      height: 48px;
+      margin-right: 15px;
+    }
     h1 {
       color: var(--title-colour);
       font-size: 32px;
       font-weight: 800;
       background: linear-gradient(45deg, #c03d3d, #ff6b6b);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
       text-align: center;
@@ -109,6 +128,10 @@
     }
     .button-grid button:hover {
       background-color: var(--button-hover);
+    }
+    .button-grid button:focus {
+      outline: 3px solid var(--button-focus);
+      outline-offset: 2px;
     }
     .button-grid button.active {
       background-color: var(--button-active);
@@ -177,6 +200,10 @@
     .all-clear-button:hover {
       opacity: 0.9;
     }
+    .all-clear-button:focus {
+      outline: 3px solid var(--button-focus);
+      outline-offset: 2px;
+    }
     footer {
       margin-top: 40px;
       padding-top: 20px;
@@ -192,7 +219,7 @@
       flex: 1 1 300px;
     }
     .footer-section h3 {
-      color: var(--primary-color);
+      color: var(--secondary-color);
       font-size: 16px;
       margin-bottom: 10px;
     }
@@ -203,6 +230,66 @@
     }
     .warning.success {
       color: var(--success-color);
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    .instructions-container {
+      background-color: rgba(131, 173, 195, 0.1);
+      border-left: 4px solid var(--secondary-color);
+      margin-bottom: 20px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .instructions-toggle {
+      background-color: rgba(131, 173, 195, 0.2);
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--secondary-color);
+      user-select: none;
+    }
+    .instructions-toggle:hover {
+      background-color: rgba(131, 173, 195, 0.3);
+    }
+    .instructions-toggle:focus {
+      outline: 3px solid var(--button-focus);
+      outline-offset: -3px;
+    }
+    .instructions-toggle .icon {
+      transition: transform 0.3s ease;
+    }
+    .instructions-toggle.collapsed .icon {
+      transform: rotate(-90deg);
+    }
+    .instructions {
+      padding: 12px;
+      font-size: 14px;
+      max-height: 200px;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+      opacity: 1;
+    }
+    .instructions.collapsed {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+    .key-controls {
+      margin-top: 8px;
+      color: var(--text-secondary);
     }
     @media (max-width: 480px) {
       body {
@@ -218,7 +305,7 @@
         gap: 6px;
       }
       .button-grid button {
-        font-size: 12px;
+        font-size: 16px;
         padding: 8px 4px;
       }
       .title {
@@ -230,24 +317,66 @@
       .footer-section {
         flex: 1 1 100%;
       }
+      .app-logo {
+        width: 36px;
+        height: 36px;
+        margin-right: 10px;
+      }
+      .header-title-container {
+        flex-wrap: wrap;
+      }
+    }
+    /* High contrast mode */
+    @media (prefers-contrast: more) {
+      :root {
+        --text-color: #ffffff;
+        --text-secondary: #f0f0f0;
+        --button-bg: #000000;
+        --button-hover: #333333;
+        --button-active: #3b2e6e;
+        --button-focus: #ffffff;
+      }
+      .button-grid button {
+        border: 1px solid #ffffff;
+      }
+      h1 {
+        background: none;
+        -webkit-text-fill-color: #ffffff;
+        color: #ffffff;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="app-header">
-      <h1><span class="title-icon">📊</span> CVI Range Rating II Calculator</h1>
-      <div class="title-divider"></div>
+      <div class="header-title-container">
+        <img src="rangeiiicon.png" alt="CVI Range Calculator Icon" class="app-logo">
+        <h1>CVI Range Rating II Calculator</h1>
+      </div>
+      <div class="title-divider" aria-hidden="true"></div>
       <h2>Based on Dr. Roman-Lantzy's Within-CVI Characteristics Assessment Method</h2>
     </div>
 
-    <div class="button-grid" id="buttonGrid"></div>
-    <div class="result-container">
+    <div class="instructions-container">
+      <div class="instructions-toggle collapsed" id="instructionsToggle" tabindex="0" role="button" aria-expanded="false" aria-controls="instructionsContent">
+        <span>Instructions</span>
+        <span class="icon">▼</span>
+      </div>
+      <div class="instructions collapsed" id="instructionsContent" aria-label="Instructions">
+        <p>Select a value for each of the 10 CVI characteristics below. Use the number buttons (0, 0.25, 0.5, 0.75, 1). You may click the placeholder button on the right if skipping a row temporarily, and intend to come back to it. One selection must be made in each row to complete the Rating II calculation.</p>
+        <p class="key-controls">Keyboard users: Use Tab to navigate between buttons and Enter/Space to select. Arrow keys navigate within rows and columns.</p>
+      </div>
+    </div>
+
+    <div class="button-grid" id="buttonGrid" role="group" aria-label="CVI Characteristics Assessment Grid"></div>
+    
+    <div class="result-container" aria-live="polite">
       <div class="total-display" id="totalDisplay">Total: 0</div>
       <div class="warning" id="warning">Characteristics scored: <span id="scoredCount">0</span>/10</div>
     </div>
 
-    <button class="all-clear-button" id="allClearButton">All Clear</button>
+    <button class="all-clear-button" id="allClearButton" aria-label="Clear all selections">All Clear</button>
 
     <div class="datawarning">
       No data is collected or saved. Please record the results on a CVI Range Assessment form before closing.
@@ -270,8 +399,42 @@
   </div>
 
   <script>
+    // Register service worker for PWA support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service worker registered'))
+          .catch(err => console.log('Service worker registration failed: ', err));
+      });
+    }
+  
     document.addEventListener('DOMContentLoaded', function() {
       let isDataEntered = false;
+      
+      // Instructions drawer functionality
+      const instructionsToggle = document.getElementById('instructionsToggle');
+      const instructionsContent = document.getElementById('instructionsContent');
+      
+      function toggleInstructions() {
+        const isExpanded = instructionsToggle.getAttribute('aria-expanded') === 'true';
+        instructionsToggle.setAttribute('aria-expanded', !isExpanded);
+        
+        if (isExpanded) {
+          instructionsContent.classList.add('collapsed');
+          instructionsToggle.classList.add('collapsed');
+        } else {
+          instructionsContent.classList.remove('collapsed');
+          instructionsToggle.classList.remove('collapsed');
+        }
+      }
+      
+      instructionsToggle.addEventListener('click', toggleInstructions);
+      instructionsToggle.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleInstructions();
+        }
+      });
 
       function createButtonGrid() {
         const numRows = 10;
@@ -295,22 +458,61 @@
           let title = document.createElement('div');
           title.classList.add('title');
           title.innerHTML = titles[row];
+          title.id = `characteristic-${row + 1}`;
           grid.appendChild(title);
+
+          // Create a group for the row buttons
+          let rowGroup = document.createElement('div');
+          rowGroup.setAttribute('role', 'group');
+          rowGroup.setAttribute('aria-labelledby', `characteristic-${row + 1}`);
+          rowGroup.style.display = 'contents';
+          grid.appendChild(rowGroup);
 
           for (let col = 0; col < numCols; col++) {
             let button = document.createElement('button');
-            button.textContent = values[col] === 0 ? '0' : values[col] === 1 ? '1' : `.${(values[col] * 100).toFixed(0)}`;
+            const valueText = values[col] === 0 ? '0' : values[col] === 1 ? '1' : `.${(values[col] * 100).toFixed(0)}`;
+            button.textContent = valueText;
             button.dataset.value = values[col];
             button.dataset.row = row;
+            button.dataset.col = col;
+            button.setAttribute('aria-label', `Value ${valueText} for ${titles[row].split('<')[0].trim()}`);
             button.onclick = () => handleButtonClick(button, row);
-            grid.appendChild(button);
+            button.onkeydown = (e) => handleKeyDown(e, row, col);
+            rowGroup.appendChild(button);
           }
 
           let placeholderButton = document.createElement('button');
           placeholderButton.classList.add('placeholder');
           placeholderButton.dataset.row = row;
+          placeholderButton.dataset.col = 5;
+          placeholderButton.setAttribute('aria-label', `Not assessed for ${titles[row].split('<')[0].trim()}`);
           placeholderButton.onclick = () => handlePlaceholderClick(placeholderButton, row);
-          grid.appendChild(placeholderButton);
+          placeholderButton.onkeydown = (e) => handleKeyDown(e, row, 5);
+          rowGroup.appendChild(placeholderButton);
+        }
+      }
+
+      function handleKeyDown(e, row, col) {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          let nextCol = (col + 1) % 6;
+          const nextButton = document.querySelector(`[data-row='${row}'][data-col='${nextCol}']`);
+          if (nextButton) nextButton.focus();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          let prevCol = (col - 1 + 6) % 6;
+          const prevButton = document.querySelector(`[data-row='${row}'][data-col='${prevCol}']`);
+          if (prevButton) prevButton.focus();
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          let nextRow = (row + 1) % 10;
+          const nextButton = document.querySelector(`[data-row='${nextRow}'][data-col='${col}']`);
+          if (nextButton) nextButton.focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          let prevRow = (row - 1 + 10) % 10;
+          const prevButton = document.querySelector(`[data-row='${prevRow}'][data-col='${col}']`);
+          if (prevButton) prevButton.focus();
         }
       }
 
@@ -318,13 +520,19 @@
         const buttonsInRow = document.querySelectorAll(`[data-row='${row}']`);
         const placeholderButton = document.querySelector(`.placeholder[data-row='${row}']`);
         
-        buttonsInRow.forEach(btn => btn.classList.remove('active'));
+        buttonsInRow.forEach(btn => {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-pressed', 'false');
+        });
+        
         button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
         
         placeholderButton.classList.remove('active');
         placeholderButton.classList.add('selected');
         
         updateTotal();
+        announceSelection(button);
         isDataEntered = true;
       }
 
@@ -333,56 +541,114 @@
         
         if (button.classList.contains('active')) {
           button.classList.remove('active');
+          button.setAttribute('aria-pressed', 'false');
         } else {
-          buttonsInRow.forEach(btn => btn.classList.remove('active', 'selected'));
+          buttonsInRow.forEach(btn => {
+            btn.classList.remove('active', 'selected');
+            btn.setAttribute('aria-pressed', 'false');
+          });
           button.classList.add('active');
           button.classList.remove('selected');
+          button.setAttribute('aria-pressed', 'true');
         }
         
         updateTotal();
+        announceSelection(button);
         isDataEntered = true;
+      }
+
+      function announceSelection(button) {
+        const row = button.dataset.row;
+        const titleElement = document.getElementById(`characteristic-${parseInt(row) + 1}`);
+        const title = titleElement ? titleElement.textContent.split('\n')[0].trim() : 'Characteristic';
+        const value = button.classList.contains('placeholder') ? 'Not assessed' : button.textContent;
+        
+        // Use aria-live region to announce the selection
+        const liveRegion = document.createElement('div');
+        liveRegion.setAttribute('aria-live', 'assertive');
+        liveRegion.setAttribute('class', 'visually-hidden');
+        liveRegion.textContent = `${title} set to ${value}`;
+        document.body.appendChild(liveRegion);
+        
+        // Remove after announcement
+        setTimeout(() => {
+          document.body.removeChild(liveRegion);
+        }, 1000);
       }
 
       function updateTotal() {
         let total = 0;
         let scoredCharacteristics = 0;
+        
         document.querySelectorAll('.button-grid button.active:not(.placeholder)').forEach(button => {
           total += parseFloat(button.dataset.value);
           scoredCharacteristics++;
         });
-        document.getElementById('totalDisplay').textContent = `Total: ${total.toFixed(2)}`;
-        document.getElementById('scoredCount').textContent = scoredCharacteristics;
+        
+        const totalDisplay = document.getElementById('totalDisplay');
+        totalDisplay.textContent = `Total: ${total.toFixed(2)}`;
+        
+        const scoredCount = document.getElementById('scoredCount');
+        scoredCount.textContent = scoredCharacteristics;
 
         const warningElement = document.getElementById('warning');
         if (scoredCharacteristics === 10) {
           warningElement.classList.add('success');
+          warningElement.setAttribute('aria-label', 'All 10 characteristics have been scored. Total is ' + total.toFixed(2));
         } else {
           warningElement.classList.remove('success');
+          warningElement.setAttribute('aria-label', scoredCharacteristics + ' out of 10 characteristics scored. Total is ' + total.toFixed(2));
         }
       }
 
       function clearAllSelections() {
         document.querySelectorAll('.button-grid button').forEach(button => {
           button.classList.remove('active', 'selected');
+          button.setAttribute('aria-pressed', 'false');
         });
+        
         updateTotal();
+        
+        // Announce clearing
+        const liveRegion = document.createElement('div');
+        liveRegion.setAttribute('aria-live', 'assertive');
+        liveRegion.setAttribute('class', 'visually-hidden');
+        liveRegion.textContent = 'All selections have been cleared';
+        document.body.appendChild(liveRegion);
+        
+        setTimeout(() => {
+          document.body.removeChild(liveRegion);
+        }, 1000);
+        
         isDataEntered = false;
       }
+
+      // Handle escape key to clear focus
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.activeElement.blur();
+        }
+      });
 
       createButtonGrid();
 
       document.getElementById('allClearButton').addEventListener('click', clearAllSelections);
 
-      // Add event listener for beforeunload event
+      // Add event listener for beforeunload event with improved reliability
       window.addEventListener('beforeunload', function (e) {
         if (isDataEntered) {
-          // Cancel the event
-          e.preventDefault();
-          // Chrome requires returnValue to be set
-          e.returnValue = '';
+          // Standard message (browsers will ignore this and show their own message)
+          const message = 'You have unsaved data. Are you sure you want to leave?';
+          e.returnValue = message;
+          return message;
         }
       });
+
+      // Add unload confirmation dialog via native browser dialog
+      window.addEventListener('pagehide', function() {
+        // This will trigger the browser's beforeunload handler set above
+      });
     });
-  </script>6
+  </script>
 </body>
 </html>
