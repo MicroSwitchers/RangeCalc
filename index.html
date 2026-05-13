@@ -1125,19 +1125,31 @@
       });
 
       // ── Haptic ────────────────────────────────────────────────────────────
-      function haptic(pattern) {
+      let lastHapticAt = 0;
+      function haptic(pattern, targetEl) {
         if (!settings.haptic) return;
+
+        const now = Date.now();
+        if (now - lastHapticAt < 90) return;
+
+        let didVibrate = false;
         if (navigator.vibrate) {
-          navigator.vibrate(pattern);
-        } else {
-          // iOS fallback: brief CSS scale pulse on the focused/active element
-          const el = document.activeElement;
-          if (el && el !== document.body) {
-            el.classList.remove('haptic-pulse');
-            void el.offsetWidth; // reflow to restart animation
-            el.classList.add('haptic-pulse');
-            el.addEventListener('animationend', () => el.classList.remove('haptic-pulse'), { once: true });
+          try {
+            didVibrate = !!navigator.vibrate(pattern);
+            if (didVibrate) lastHapticAt = now;
+          } catch (e) {
+            didVibrate = false;
           }
+        }
+
+        // Visual fallback for platforms without vibration support (notably iOS Safari)
+        const el = targetEl || document.activeElement;
+        if (!didVibrate && el && el !== document.body) {
+          el.classList.remove('haptic-pulse');
+          void el.offsetWidth; // reflow to restart animation
+          el.classList.add('haptic-pulse');
+          lastHapticAt = now;
+          el.addEventListener('animationend', () => el.classList.remove('haptic-pulse'), { once: true });
         }
       }
 
@@ -1587,6 +1599,28 @@
       });
 
       createButtonGrid();
+
+      // Trigger haptics as soon as a touch starts (mobile), not only after click handlers.
+      // This makes feedback feel immediate and more reliable on Android/iOS PWAs.
+      const hapticTouchSelector = '.button-grid button, .all-clear-button, .all-clear-confirm-btn, .settings-btn, .settings-close, .export-button, .instructions-toggle, .subcategory-toggle, .toggle-switch';
+      let lastHapticTouch = 0;
+
+      document.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'touch') return;
+        const target = e.target.closest(hapticTouchSelector);
+        if (!target) return;
+        lastHapticTouch = Date.now();
+        haptic(10, target);
+      }, { passive: true });
+
+      // Fallback for older mobile browsers that do not fully support pointer events.
+      document.addEventListener('touchstart', (e) => {
+        if (Date.now() - lastHapticTouch < 120) return;
+        const target = e.target.closest(hapticTouchSelector);
+        if (!target) return;
+        lastHapticTouch = Date.now();
+        haptic(10, target);
+      }, { passive: true });
 
       // Set today's date as default
       document.getElementById('assessmentDate').valueAsDate = new Date();
