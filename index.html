@@ -615,11 +615,16 @@
       letter-spacing: 0.8px;
     }
     .export-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 16px;
     }
+    .export-field {
+      flex: 0 0 auto;
+    }
+    .export-field:first-child input { width: 130px; }
+    .export-field:last-child input  { width: 170px; }
     .export-field label {
       display: block;
       font-size: 11px;
@@ -671,7 +676,18 @@
     }
     .export-button:hover { transform: translateY(-2px); filter: brightness(1.12); }
     .export-button:active { transform: translateY(0); filter: brightness(0.95); }
+    /* iOS haptic substitute — brief scale pulse */
+    @keyframes haptic-pulse {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(0.93); }
+      70%  { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+    .haptic-pulse { animation: haptic-pulse 0.18s cubic-bezier(0.34,1.56,0.64,1); }
+
     @media (max-width: 480px) {
+      .export-field:first-child input { width: 110px; }
+      .export-field:last-child input  { width: 150px; }
       .export-fields { grid-template-columns: 1fr; }
       body { padding: 0 0 32px; }
       .container { border-radius: 0; }
@@ -1110,7 +1126,19 @@
 
       // ── Haptic ────────────────────────────────────────────────────────────
       function haptic(pattern) {
-        if (settings.haptic && navigator.vibrate) navigator.vibrate(pattern);
+        if (!settings.haptic) return;
+        if (navigator.vibrate) {
+          navigator.vibrate(pattern);
+        } else {
+          // iOS fallback: brief CSS scale pulse on the focused/active element
+          const el = document.activeElement;
+          if (el && el !== document.body) {
+            el.classList.remove('haptic-pulse');
+            void el.offsetWidth; // reflow to restart animation
+            el.classList.add('haptic-pulse');
+            el.addEventListener('animationend', () => el.classList.remove('haptic-pulse'), { once: true });
+          }
+        }
       }
 
       // ── Voice output ──────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 // Service Worker for CVI Range Rating II Calculator
 // Bump CACHE_VERSION whenever app files change to force a cache refresh
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `cvi-calculator-${CACHE_VERSION}`;
 
 // All local assets to pre-cache on install
