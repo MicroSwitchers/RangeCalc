@@ -10,41 +10,55 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="msapplication-TileImage" content="rangeiiicon.png">
   <meta name="msapplication-TileColor" content="#252a2e">
-  <!-- Favicon -->
   <link rel="icon" href="rangeiiicon.png" type="image/png">
   <link rel="icon" sizes="192x192" href="rangeiiicon-192.png">
   <link rel="icon" sizes="512x512" href="rangeiiicon-512.png">
-  <!-- PWA Support -->
   <link rel="apple-touch-icon" href="rangeiiicon.png">
   <link rel="apple-touch-icon" sizes="192x192" href="rangeiiicon-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="rangeiiicon-512.png">
   <meta name="theme-color" content="#252a2e">
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
     :root {
-      --bg-color: #1e1e1e;
-      --primary-color: #47555d;
-      --title-colour: rgb(192, 61, 61);
-      --secondary-color: #83adc3;
-      --text-color: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --button-bg: #3c3c3c;
-      --button-hover: #4a4a4a;
-      --button-active: #50437b;
-      --button-focus: #6a5a9e;
-      --warning-color: #b07d62;
-      --placeholder-color: #bd6e6e;
-      --placeholder-active: #a89335;
-      --placeholder-selected: #416d43;
-      --success-color: #4CAF50;
+      --bg-color: #111318;
+      --card-bg: #1c1e26;
+      --header-bg: #13151b;
+      --surface: #24262f;
+      --primary-color: #64748b;
+      --title-colour: #ff6b6b;
+      --secondary-color: #7dd3fc;
+      --text-color: #f1f5f9;
+      --text-secondary: #9aa5b8;
+      --button-bg: #272a35;
+      --button-hover: #313544;
+      --button-active: #1a4f8a;
+      --button-focus: #38bdf8;
+      --warning-color: #fbbf24;
+      --placeholder-color: #5a3535;
+      --placeholder-active: #92400e;
+      --placeholder-selected: #14532d;
+      --success-color: #34d399;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56,189,248,0.3);
+      --border: rgba(255,255,255,0.08);
+      --border-light: rgba(255,255,255,0.14);
+      --radius: 12px;
+      --radius-sm: 7px;
     }
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
       font-family: 'Inter', sans-serif;
       line-height: 1.6;
       margin: 0;
-      padding: 16px;
-      background-color: var(--bg-color);
+      padding: 24px 16px 40px;
+      background: var(--bg-color);
+      background-image:
+        radial-gradient(ellipse 80% 40% at 20% -10%, rgba(200,60,60,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 110%, rgba(56,189,248,0.03) 0%, transparent 60%);
       color: var(--text-color);
       display: flex;
       flex-direction: column;
@@ -54,16 +68,26 @@
       max-width: 700px;
       margin: 0 auto;
       padding: 20px;
-      border-radius: 10px;
-      background-color: #282828;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
+      overflow: hidden;
     }
     .app-header {
-      background-color: #252a2e;
-      padding: 25px 20px;
-      border-radius: 10px 10px 0 0;
+      background: linear-gradient(160deg, var(--header-bg) 0%, var(--surface) 100%);
+      padding: 28px 20px 24px;
+      border-radius: var(--radius) var(--radius) 0 0;
       margin: -20px -20px 20px -20px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+    }
+    .app-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 15%; right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.5;
     }
     .header-title-container {
       display: flex;
@@ -78,38 +102,38 @@
     }
     h1 {
       color: var(--title-colour);
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
       background: linear-gradient(45deg, #c03d3d, #ff6b6b);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       text-align: center;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
     .title-divider {
       width: 80%;
       max-width: 300px;
-      height: 4px;
+      height: 3px;
       background: linear-gradient(to right, transparent, var(--title-colour), transparent);
-      margin: 20px auto;
+      margin: 16px auto;
+      opacity: 0.7;
     }
     h2 {
-      color: #b0b0b0;
-      font-size: 18px;
+      color: var(--text-secondary);
+      font-size: 15px;
       font-weight: 400;
       margin-top: 0;
       margin-bottom: 0;
       text-align: center;
       font-style: italic;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
     .reminder {
       display: block;
       font-style: italic;
-      color: var(--text-secondary);
+      color: #c8d4e8;
       font-size: 14px;
       margin-top: 4px;
     }
@@ -125,40 +149,85 @@
       margin-bottom: 24px;
     }
     .button-grid button {
-      border: none;
-      border-radius: 4px;
-      padding: 10px 5px;
-      background-color: var(--button-bg);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius-sm);
+      padding: 13px 5px;
+      background: var(--button-bg);
       cursor: pointer;
-      font-size: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
       color: var(--text-color);
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background 0.12s, border-color 0.12s, transform 0.1s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.12s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      min-height: 48px;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .button-grid button:hover {
-      background-color: var(--button-hover);
+      background: var(--button-hover);
+      border-color: rgba(56,189,248,0.5);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
     }
-    .button-grid button:focus {
+    .button-grid button:active {
+      transform: translateY(1px) scale(0.94);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.06s, box-shadow 0.06s;
+    }
+    .button-grid button:focus-visible {
       outline: 3px solid var(--button-focus);
-      outline-offset: 2px;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 5px rgba(56,189,248,0.35);
     }
     .button-grid button.active {
-      background-color: var(--button-active);
-      color: var(--text-color);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      background: #5c3fa8;
+      border-color: #7c5fcf;
+      color: #fff;
+      box-shadow: 0 0 0 2px #7c5fcf, 0 4px 14px rgba(92,63,168,0.5);
+      transform: scale(1.0);
     }
     .button-grid button.placeholder {
-      background-color: var(--placeholder-color);
+      background: #b86a6a;
+      border: 1px solid rgba(0,0,0,0.15);
+      color: rgba(30,15,15,0.88);
       width: 100%;
       aspect-ratio: 1 / 1;
+      font-size: 14px;
+      transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.1s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.12s;
     }
-    .button-grid button.placeholder.selected {
-      background-color: var(--placeholder-selected);
+    .button-grid button.placeholder::before { display: none; }
+    .button-grid button.placeholder .placeholder-label {
+      position: relative;
+      z-index: 1;
     }
+    .button-grid button.placeholder:hover {
+      background: #c97878;
+      border-color: rgba(255,255,255,0.3);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    }
+    .button-grid button.placeholder:active {
+      transform: translateY(1px) scale(0.94);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.06s, box-shadow 0.06s;
+    }
+    /* Review */
     .button-grid button.placeholder.active {
-      background-color: var(--placeholder-active);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+      background: #b8960a;
+      border-color: rgba(0,0,0,0.15);
+      color: rgba(30,20,0,0.88);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
+    .button-grid button.placeholder.active::before { display: none; }
+    /* Done */
+    .button-grid button.placeholder.selected {
+      background: #3a7848;
+      border-color: rgba(0,0,0,0.15);
+      color: rgba(10,30,15,0.88);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .button-grid button.placeholder.selected::before { display: none; }
     .title {
       font-weight: 600;
       margin: 16px 0 8px;
@@ -166,25 +235,192 @@
       grid-column: 1 / -1;
       font-size: 14px;
       color: var(--secondary-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
     }
+    .title .row-status-dot {
+      flex-shrink: 0;
+      width: 10px;
+      height: 10px;
+      margin-top: 3px;
+      background: rgba(230,110,110,0.55);
+      border: 1px solid rgba(230,110,110,0.8);
+      transition: background 0.35s, box-shadow 0.35s, clip-path 0.35s, border-color 0.35s;
+      border-radius: 50%;
+      clip-path: none;
+    }
+    .title .row-status-dot.na {
+      background: rgba(225,185,50,0.55);
+      border-color: rgba(225,185,50,0.85);
+      border-radius: 0;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    .title .row-status-dot.scored {
+      background: rgba(70,215,135,0.55);
+      border-color: rgba(70,215,135,0.85);
+      border-radius: 0;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+
+    /* Subcategory Drawer Styles */
+    .subcategory-container {
+      grid-column: 1 / -1;
+      margin-bottom: 8px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    .subcategory-toggle {
+      background: rgba(56,189,248,0.07);
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--secondary-color);
+      user-select: none;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      min-height: 44px;
+      transition: background 0.15s, transform 0.1s cubic-bezier(0.34,1.56,0.64,1);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .subcategory-toggle:hover {
+      background: rgba(56,189,248,0.15);
+      transform: translateY(-1px);
+    }
+    .subcategory-toggle:active {
+      transform: scale(0.98);
+      transition: transform 0.06s;
+    }
+    .subcategory-toggle:focus {
+      outline: 3px solid var(--button-focus);
+      outline-offset: -3px;
+    }
+    .subcategory-toggle .icon {
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .subcategory-toggle.collapsed .icon {
+      transform: rotate(-90deg);
+    }
+    .subcategory-toggle.collapsed {
+      border-radius: var(--radius-sm);
+    }
+    .subcategory-toggle:not(.collapsed) {
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+    .subcategory-content {
+      background: rgba(0,0,0,0.18);
+      padding: 0 12px 0 12px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      border-top: 1px solid var(--border);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      max-height: 2000px;
+      transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease, padding 0.3s ease;
+      opacity: 1;
+    }
+    .subcategory-content.collapsed {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+      overflow: hidden;
+      border: none;
+    }
+    .sub-title {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 12px 0 4px 0;
+      font-style: italic;
+      text-align: left;
+    }
+    .complexity-total-title {
+      font-weight: 400;
+      margin: 8px 0 4px;
+      text-align: left;
+      grid-column: 1 / -1;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: none;
+      letter-spacing: 0;
+      font-style: italic;
+      padding: 2px 0 6px;
+    }
+    .complexity-section-divider {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: var(--border-light);
+      margin: 8px 0 4px;
+    }
+    .subcategory-content button.memory-btn {
+      font-size: 16px;
+      padding: 8px 4px;
+    }
+
     .result-container {
-      background-color: rgba(70, 162, 208, 0.1);
-      border: 1px solid var(--secondary-color);
+      background: linear-gradient(180deg, rgba(56,189,248,0.07) 0%, transparent 100%);
+      border: 1px solid var(--border-light);
       color: var(--text-color);
-      padding: 16px;
+      padding: 20px 16px;
       margin-top: 24px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
       text-align: center;
     }
     .total-display {
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 8px;
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -1px;
+      text-shadow: 0 0 16px rgba(56,189,248,0.15);
+      font-variant-numeric: tabular-nums;
     }
     .warning {
       color: var(--warning-color);
-      font-size: 14px;
+      font-size: 18px;
       font-style: italic;
+    }
+    .progress-bar-wrap {
+      margin-top: 22px;
+      display: flex;
+      gap: 0;
+      height: 22px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #18191f;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .progress-segment {
+      flex: 1;
+      height: 100%;
+      background: transparent;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.35s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+    }
+    .progress-segment:last-child {
+      border-right: none;
+    }
+    .progress-segment::after { display: none; }
+    .progress-segment.na {
+      background: rgba(56,189,248,0.58);
+    }
+    .progress-segment.na::after { display: none; }
+    .progress-segment.scored {
+      background: rgba(56,189,248,0.58);
+    }
+    .progress-segment.scored::after { display: none; }
+    .progress-label {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0.4px;
     }
     .datawarning {
       color: var(--text-secondary);
@@ -195,24 +431,83 @@
     .all-clear-button {
       display: block;
       width: 100%;
-      border: none;
-      border-radius: 4px;
-      padding: 12px;
-      background-color: var(--primary-color);
-      color: var(--text-color);
+      border: 1px solid rgba(220,80,80,0.45);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      background: var(--surface);
+      color: #f87171;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin-top: 24px;
-      transition: all 0.3s ease;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      margin-top: 16px;
+      transition: transform 0.1s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, border-color 0.2s, box-shadow 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      min-height: 50px;
+      -webkit-tap-highlight-color: transparent;
     }
     .all-clear-button:hover {
-      opacity: 0.9;
+      transform: translateY(-2px) scale(1.01);
+      filter: brightness(1.18);
+      border-color: rgba(255,255,255,0.3);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
     }
-    .all-clear-button:focus {
+    .all-clear-button:active {
+      transform: scale(0.97);
+      filter: brightness(0.92);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 0.06s, filter 0.06s;
+    }
+    .all-clear-button:focus,
+    .all-clear-button:focus-visible {
       outline: 3px solid var(--button-focus);
-      outline-offset: 2px;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 5px rgba(56,189,248,0.35);
     }
+    .all-clear-button.confirming {
+      background: #5a1a1a;
+      border-color: rgba(220,80,80,0.7);
+      color: #f87171;
+      filter: none;
+      transform: none;
+    }
+    .all-clear-confirm-row {
+      display: none;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .all-clear-confirm-row.visible {
+      display: flex;
+    }
+    .all-clear-confirm-btn {
+      flex: 1;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 12px 8px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      min-height: 48px;
+      transition: transform 0.1s cubic-bezier(0.34,1.56,0.64,1), filter 0.12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .all-clear-confirm-btn:active {
+      transform: scale(0.95);
+      transition: transform 0.06s;
+    }
+    .all-clear-confirm-btn.yes {
+      background: #7f1d1d;
+      border-color: rgba(220,80,80,0.6);
+      color: #fca5a5;
+    }
+    .all-clear-confirm-btn.yes:hover { filter: brightness(1.2); }
+    .all-clear-confirm-btn.no {
+      background: var(--surface);
+      border-color: var(--border-light);
+      color: var(--text-color);
+    }
+    .all-clear-confirm-btn.no:hover { filter: brightness(1.15); }
     footer {
       margin-top: 40px;
       padding-top: 20px;
@@ -251,26 +546,30 @@
       border: 0;
     }
     .instructions-container {
-      background-color: rgba(131, 173, 195, 0.1);
-      border-left: 4px solid var(--secondary-color);
+      background: rgba(56,189,248,0.04);
+      border-left: 3px solid var(--accent);
       margin-bottom: 20px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
       overflow: hidden;
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--accent);
     }
     .instructions-toggle {
-      background-color: rgba(131, 173, 195, 0.2);
-      padding: 12px;
-      font-size: 15px;
-      font-weight: 600;
+      background: rgba(56,189,248,0.07);
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: var(--secondary-color);
       user-select: none;
+      min-height: 44px;
+      transition: background 0.2s;
     }
     .instructions-toggle:hover {
-      background-color: rgba(131, 173, 195, 0.3);
+      background: rgba(56,189,248,0.13);
     }
     .instructions-toggle:focus {
       outline: 3px solid var(--button-focus);
@@ -300,42 +599,100 @@
       margin-top: 8px;
       color: var(--text-secondary);
     }
+    .export-section {
+      margin-top: 28px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+    }
+    .export-section h3 {
+      color: var(--secondary-color);
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .export-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .export-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+    }
+    .export-field input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--text-color);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .export-field input:focus {
+      border-color: var(--accent);
+    }
+    .export-field input::placeholder {
+      color: var(--text-muted, #4e5a6e);
+    }
+    /* Style the date input calendar icon to be visible */
+    .export-field input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.6);
+      cursor: pointer;
+    }
+    .export-button {
+      display: block;
+      width: 100%;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      background: linear-gradient(135deg, #0c4a7a 0%, #1565c0 100%);
+      color: #fff;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 4px 16px rgba(21,101,192,0.55);
+      border: 1px solid rgba(56,189,248,0.5);
+      transition: transform 0.18s, filter 0.18s;
+      min-height: 50px;
+    }
+    .export-button:hover { transform: translateY(-2px); filter: brightness(1.12); }
+    .export-button:active { transform: translateY(0); filter: brightness(0.95); }
     @media (max-width: 480px) {
-      body {
-        padding: 12px;
-      }
-      h1 {
-        font-size: 24px;
-      }
-      h2 {
-        font-size: 14px;
-      }
-      .button-grid {
-        gap: 6px;
-      }
-      .button-grid button {
-        font-size: 16px;
-        padding: 8px 4px;
-      }
-      .title {
-        font-size: 13px;
-      }
-      .total-display {
-        font-size: 24px;
-      }
-      .footer-section {
-        flex: 1 1 100%;
-      }
-      .app-logo {
-        width: 48px;
-        height: 48px;
-        margin-right: 10px;
-      }
-      .header-title-container {
-        flex-wrap: wrap;
+      .export-fields { grid-template-columns: 1fr; }
+      body { padding: 0 0 32px; }
+      .container { border-radius: 0; }
+      h1 { font-size: 20px; }
+      h2 { font-size: 13px; }
+      .button-grid { gap: 5px; }
+      .button-grid button { font-size: 15px; padding: 12px 4px; min-height: 44px; }
+      .title { font-size: 12px; }
+      .total-display { font-size: 34px; }
+      .footer-section { flex: 1 1 100%; }
+      .app-logo { width: 48px; height: 48px; margin-right: 10px; }
+      .header-title-container { flex-wrap: wrap; }
+    }
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
       }
     }
-    /* High contrast mode */
+    /* High contrast mode (OS-level) */
     @media (prefers-contrast: more) {
       :root {
         --text-color: #ffffff;
@@ -345,20 +702,176 @@
         --button-active: #3b2e6e;
         --button-focus: #ffffff;
       }
-      .button-grid button {
-        border: 1px solid #ffffff;
-      }
-      h1 {
-        background: none;
-        -webkit-text-fill-color: #ffffff;
-        color: #ffffff;
-      }
+      .button-grid button { border: 1px solid #ffffff; }
+      h1 { background: none; -webkit-text-fill-color: #ffffff; color: #ffffff; }
     }
+    /* High contrast (user setting) */
+    body.high-contrast {
+      --bg-color: #000000;
+      --card-bg: #0d0d0d;
+      --header-bg: #000000;
+      --surface: #111111;
+      --text-color: #ffffff;
+      --text-secondary: #dddddd;
+      --button-bg: #111111;
+      --button-hover: #1e1e1e;
+      --border: rgba(255,255,255,0.35);
+      --border-light: rgba(255,255,255,0.45);
+      --secondary-color: #00d4ff;
+      --accent: #00d4ff;
+      --accent-glow: rgba(0,212,255,0.4);
+      --warning-color: #ffee00;
+      --success-color: #00ff99;
+    }
+    body.high-contrast h1 {
+      background: none;
+      -webkit-text-fill-color: #ff7070;
+      color: #ff7070;
+    }
+    body.high-contrast .button-grid button {
+      border: 2px solid rgba(255,255,255,0.55);
+    }
+    body.high-contrast .button-grid button.active:not(.placeholder) {
+      background: #3b2e6e;
+      border-color: #a07fff;
+      box-shadow: 0 0 0 2px #a07fff;
+    }
+    body.high-contrast .button-grid button.placeholder {
+      background: #7a2222;
+      color: #ffcccc;
+      border: 2px solid rgba(255,150,150,0.6);
+    }
+    body.high-contrast .button-grid button.placeholder.active {
+      background: #5c4800;
+      color: #ffeeaa;
+      border-color: rgba(255,220,100,0.6);
+      box-shadow: none;
+    }
+    body.high-contrast .button-grid button.placeholder.selected {
+      background: #1a4d2a;
+      color: #aaffcc;
+      border-color: rgba(100,255,160,0.6);
+      box-shadow: none;
+    }
+
+    /* ── Settings panel ───────────────────────────────────── */
+    .settings-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(220,80,80,0.4);
+      border-radius: var(--radius-sm);
+      color: #f87171;
+      font-size: 19px;
+      width: 40px; height: 40px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      z-index: 10;
+    }
+    .settings-btn:hover { background: rgba(220,80,80,0.15); color: #ff8080; }
+    .settings-btn:focus-visible { outline: 3px solid var(--button-focus); outline-offset: 2px; }
+
+    .settings-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .settings-overlay.open { opacity: 1; pointer-events: all; }
+
+    .settings-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: min(320px, 92vw);
+      height: 100%;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border-light);
+      z-index: 201;
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+    }
+    .settings-panel.open { transform: translateX(0); }
+
+    .settings-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 16px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--header-bg);
+      flex-shrink: 0;
+    }
+    .settings-panel-header h3 {
+      margin: 0;
+      font-size: 15px; font-weight: 700;
+      color: var(--text-color);
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .settings-close {
+      background: none; border: none;
+      color: var(--text-secondary);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      line-height: 1;
+      font-family: 'Inter', sans-serif;
+      transition: color 0.15s, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .settings-close:hover { color: var(--text-color); background: rgba(255,255,255,0.08); }
+    .settings-close:focus-visible { outline: 3px solid var(--button-focus); }
+
+    .settings-body { padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
+
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 10px;
+      border-radius: var(--radius-sm);
+      gap: 12px;
+      transition: background 0.12s;
+    }
+    .settings-row:hover { background: rgba(255,255,255,0.04); }
+    .settings-row-label { display: flex; flex-direction: column; gap: 3px; }
+    .settings-row-label strong { font-size: 14px; font-weight: 600; color: var(--text-color); }
+    .settings-row-label span { font-size: 12px; color: var(--text-secondary); line-height: 1.35; }
+
+    /* Toggle switch */
+    .toggle-switch { position: relative; flex-shrink: 0; width: 48px; height: 27px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: #374151;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 4px; left: 4px;
+      width: 17px; height: 17px;
+      border-radius: 50%;
+      background: #9ca3af;
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--accent); border-color: rgba(56,189,248,0.4); }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(21px); background: #ffffff; }
+    .toggle-switch input:focus-visible + .toggle-track { outline: 3px solid var(--button-focus); outline-offset: 2px; }
+
+    .settings-divider { height: 1px; background: var(--border); margin: 6px 10px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="app-header">
+      <button class="settings-btn" id="settingsBtn" aria-label="Open settings" title="Settings">&#9881;</button>
       <div class="header-title-container">
         <img src="rangeiiicon-512.png" alt="CVI Range Calculator Logo" class="app-logo" width="80" height="80">
         <h1>CVI Range Rating II Calculator</h1>
@@ -383,12 +896,43 @@
     <div class="result-container" aria-live="polite">
       <div class="total-display" id="totalDisplay">Total: 0</div>
       <div class="warning" id="warning">Characteristics scored: <span id="scoredCount">0</span>/10</div>
+      <div class="progress-bar-wrap" id="progressBarWrap" role="group" aria-label="Scoring progress, 10 characteristics">
+        <div class="progress-segment" data-seg="0" role="img" aria-label="Characteristic 1: not scored"></div>
+        <div class="progress-segment" data-seg="1" role="img" aria-label="Characteristic 2: not scored"></div>
+        <div class="progress-segment" data-seg="2" role="img" aria-label="Characteristic 3: not scored"></div>
+        <div class="progress-segment" data-seg="3" role="img" aria-label="Characteristic 4: not scored"></div>
+        <div class="progress-segment" data-seg="4" role="img" aria-label="Characteristic 5: not scored"></div>
+        <div class="progress-segment" data-seg="5" role="img" aria-label="Characteristic 6: not scored"></div>
+        <div class="progress-segment" data-seg="6" role="img" aria-label="Characteristic 7: not scored"></div>
+        <div class="progress-segment" data-seg="7" role="img" aria-label="Characteristic 8: not scored"></div>
+        <div class="progress-segment" data-seg="8" role="img" aria-label="Characteristic 9: not scored"></div>
+        <div class="progress-segment" data-seg="9" role="img" aria-label="Characteristic 10: not scored"></div>
+      </div>
     </div>
 
-    <button class="all-clear-button" id="allClearButton" aria-label="Clear all selections">All Clear</button>
+    <button class="all-clear-button" id="allClearButton" aria-label="Clear all selections">Clear All</button>
+    <div class="all-clear-confirm-row" id="allClearConfirmRow" role="group" aria-label="Confirm clear all">
+      <button class="all-clear-confirm-btn yes" id="allClearYes" aria-label="Yes, clear everything">Yes, clear everything</button>
+      <button class="all-clear-confirm-btn no" id="allClearNo" aria-label="Cancel">Cancel</button>
+    </div>
+
+    <div class="export-section">
+      <h3>Export PDF Summary</h3>
+      <div class="export-fields">
+        <div class="export-field">
+          <label for="clientInitials">Client Initials</label>
+          <input type="text" id="clientInitials" maxlength="10" placeholder="e.g. A.B." autocomplete="off">
+        </div>
+        <div class="export-field">
+          <label for="assessmentDate">Assessment Date</label>
+          <input type="date" id="assessmentDate">
+        </div>
+      </div>
+      <button class="export-button" id="exportPdfBtn">Download PDF Summary</button>
+    </div>
 
     <div class="datawarning">
-      No data is collected or saved. Please record the results on a CVI Range Assessment form before closing.
+      No data is collected or saved. Please record the results on a CVI Range Assessment form or export a PDF summary before closing.
     </div>
 
     <footer>
@@ -407,29 +951,218 @@
     </footer>
   </div>
 
+  <!-- Settings overlay + panel -->
+  <div class="settings-overlay" id="settingsOverlay" aria-hidden="true"></div>
+  <aside class="settings-panel" id="settingsPanel" role="dialog" aria-modal="true" aria-label="Settings" aria-hidden="true">
+    <div class="settings-panel-header">
+      <h3>&#9881; Settings</h3>
+      <button class="settings-close" id="settingsClose" aria-label="Close settings">&times;</button>
+    </div>
+    <div class="settings-body">
+
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <strong>High Contrast</strong>
+          <span>Increases colour contrast for better visibility</span>
+        </div>
+        <label class="toggle-switch" aria-label="High contrast theme">
+          <input type="checkbox" id="settingHighContrast">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <strong>Haptic Feedback</strong>
+          <span>Vibration on button presses (mobile devices)</span>
+        </div>
+        <label class="toggle-switch" aria-label="Haptic feedback">
+          <input type="checkbox" id="settingHaptic" checked>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <strong>Voice Output</strong>
+          <span>Speaks selected values and status changes aloud</span>
+        </div>
+        <label class="toggle-switch" aria-label="Voice output">
+          <input type="checkbox" id="settingVoice">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <div class="settings-row">
+        <div class="settings-row-label">
+          <strong>Read Total Aloud</strong>
+          <span>Speaks the running total after each selection</span>
+        </div>
+        <label class="toggle-switch" aria-label="Read total aloud">
+          <input type="checkbox" id="settingVoiceTotal">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+    </div>
+  </aside>
+
   <script>
     // Register service worker for PWA support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service worker registered'))
-          .catch(err => console.log('Service worker registration failed: ', err));
+        navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+          .then(reg => {
+            // Check for updates whenever the page loads
+            reg.update();
+          })
+          .catch(err => console.warn('Service worker registration failed:', err));
       });
     }
     
     // Handle A2HS (Add to Home Screen)
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
-      // Stash the event so it can be triggered later
       deferredPrompt = e;
     });
   
     document.addEventListener('DOMContentLoaded', function() {
       let isDataEntered = false;
-      
-      // Instructions drawer functionality
+      let wasAllScored = false;
+
+      // ── Settings ──────────────────────────────────────────────────────────
+      const SETTINGS_KEY = 'cviCalcSettings';
+      const defaultSettings = { highContrast: false, haptic: true, voice: false, voiceTotal: false };
+      let settings = { ...defaultSettings };
+      try {
+        const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        if (saved) settings = { ...defaultSettings, ...saved };
+      } catch(e) {}
+
+      function saveSettings() {
+        try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch(e) {}
+      }
+      function applySettings() {
+        document.body.classList.toggle('high-contrast', settings.highContrast);
+        document.getElementById('settingHighContrast').checked = settings.highContrast;
+        document.getElementById('settingHaptic').checked = settings.haptic;
+        document.getElementById('settingVoice').checked = settings.voice;
+        document.getElementById('settingVoiceTotal').checked = settings.voiceTotal;
+      }
+      applySettings();
+
+      // Settings panel open/close
+      const settingsBtn     = document.getElementById('settingsBtn');
+      const settingsOverlay = document.getElementById('settingsOverlay');
+      const settingsPanel   = document.getElementById('settingsPanel');
+      const settingsClose   = document.getElementById('settingsClose');
+
+      function openSettings() {
+        settingsPanel.classList.add('open');
+        settingsOverlay.classList.add('open');
+        settingsPanel.setAttribute('aria-hidden', 'false');
+        settingsOverlay.setAttribute('aria-hidden', 'false');
+        settingsClose.focus();
+      }
+      function closeSettings() {
+        settingsPanel.classList.remove('open');
+        settingsOverlay.classList.remove('open');
+        settingsPanel.setAttribute('aria-hidden', 'true');
+        settingsOverlay.setAttribute('aria-hidden', 'true');
+        settingsBtn.focus();
+      }
+      settingsBtn.addEventListener('click', openSettings);
+      settingsClose.addEventListener('click', closeSettings);
+      settingsOverlay.addEventListener('click', closeSettings);
+      settingsPanel.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
+
+      document.getElementById('settingHighContrast').addEventListener('change', function() {
+        settings.highContrast = this.checked;
+        document.body.classList.toggle('high-contrast', this.checked);
+        saveSettings();
+      });
+      document.getElementById('settingHaptic').addEventListener('change', function() {
+        settings.haptic = this.checked;
+        saveSettings();
+      });
+      document.getElementById('settingVoice').addEventListener('change', function() {
+        settings.voice = this.checked;
+        if (this.checked && window.speechSynthesis) {
+          // Warm up: trigger a user-gesture-bound speak so browsers unlock audio
+          setTimeout(() => {
+            if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance('Voice on'));
+          }, 50);
+        }
+        saveSettings();
+      });
+      document.getElementById('settingVoiceTotal').addEventListener('change', function() {
+        settings.voiceTotal = this.checked;
+        saveSettings();
+      });
+
+      // ── Haptic ────────────────────────────────────────────────────────────
+      function haptic(pattern) {
+        if (settings.haptic && navigator.vibrate) navigator.vibrate(pattern);
+      }
+
+      // ── Voice output ──────────────────────────────────────────────────────
+      const VALUE_WORDS = { '0': 'zero', '0.25': 'point two five', '0.5': 'point five', '0.75': 'point seven five', '1': 'one' };
+
+      const ONES = ['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
+      const FRAC_WORDS = { '00': '', '25': ' point two five', '50': ' point five', '75': ' point seven five' };
+      function numberToWords(num) {
+        const whole = Math.floor(num);
+        const frac  = Math.round((num - whole) * 100).toString().padStart(2, '0');
+        const fracWord = FRAC_WORDS[frac] !== undefined ? FRAC_WORDS[frac] : '';
+        return (ONES[whole] || whole.toString()) + fracWord;
+      }
+
+      function getCharTitle(row) {
+        if (typeof row === 'string' && row.startsWith('sub-')) {
+          const subTitles = ['Complexity of Objects','Complexity of Array','Complexity of Sensory Environment','Complexity of Faces'];
+          return subTitles[parseInt(row.split('-')[1])] || 'Characteristic';
+        }
+        const el = document.getElementById(`characteristic-${parseInt(row) + 1}`);
+        if (!el) return 'Characteristic';
+        // Get just the first text node content, ignoring reminder sub-spans
+        const titleSpan = el.querySelector('span:not(.row-status-dot)');
+        const raw = titleSpan ? (titleSpan.firstChild ? titleSpan.firstChild.textContent : titleSpan.textContent) : el.textContent;
+        return raw.trim().replace(/^\d+\.\s*/, '').replace(/\s+/g, ' ');
+      }
+      function speak(text) {
+        if (!settings.voice || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        // Small delay avoids Chrome swallowing the utterance immediately after cancel()
+        setTimeout(() => {
+          if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+          const u = new SpeechSynthesisUtterance(text);
+          u.rate = 1.05;
+          window.speechSynthesis.speak(u);
+        }, 50);
+      }
+
+      function speakTotal() {
+        if (!settings.voiceTotal || !window.speechSynthesis) return;
+        let total = 0;
+        document.querySelectorAll('.button-grid button.active:not(.placeholder):not(.memory-btn)').forEach(b => {
+          total += parseFloat(b.dataset.value);
+        });
+        // Delay so it plays after the value utterance finishes
+        setTimeout(() => {
+          if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+          const u = new SpeechSynthesisUtterance('Total, ' + numberToWords(total));
+          u.rate = 1.05;
+          window.speechSynthesis.speak(u);
+        }, settings.voice ? 1200 : 50);
+      }
       const instructionsToggle = document.getElementById('instructionsToggle');
       const instructionsContent = document.getElementById('instructionsContent');
       
@@ -463,7 +1196,7 @@
           "2. Need for Movement", 
           "3. Visual Latency",
           "4. Visual Field Preferences",
-          "5. Difficulty With Visual Complexity<br><span class='reminder'>Remember to score subcategories</span>",
+          "5. Difficulty With Visual Complexity<br><span class='reminder'>Subcategory buttons are only provided for brainstorming the Complexity Section Total — they will not be included in the total calculation.</span>",
           "6. Need for Light",
           "7. Difficulty with Distance Viewing",
           "8. Atypical Visual Reflexes",
@@ -475,20 +1208,124 @@
         for (let row = 0; row < numRows; row++) {
           let title = document.createElement('div');
           title.classList.add('title');
-          title.innerHTML = titles[row];
+          const dot = document.createElement('span');
+          dot.classList.add('row-status-dot');
+          dot.id = `row-dot-${row}`;
+          const titleText = document.createElement('span');
+          titleText.innerHTML = titles[row];
+          title.appendChild(dot);
+          title.appendChild(titleText);
           title.id = `characteristic-${row + 1}`;
           grid.appendChild(title);
 
-          // Create a group for the row buttons
+          // Add Memory Aid Drawer specifically for Complexity (Row 5)
+          if (row === 4) {
+            let drawerWrapper = document.createElement('div');
+            drawerWrapper.classList.add('subcategory-container');
+            
+            let drawerToggle = document.createElement('div');
+            drawerToggle.classList.add('subcategory-toggle', 'collapsed');
+            drawerToggle.setAttribute('role', 'button');
+            drawerToggle.setAttribute('tabindex', '0');
+            drawerToggle.setAttribute('aria-expanded', 'false');
+            drawerToggle.innerHTML = `<span>Subcategories</span><span class="icon">▼</span>`;
+            
+            let drawerContent = document.createElement('div');
+            drawerContent.classList.add('subcategory-content', 'collapsed');
+            
+            const toggleSub = () => {
+              const isCollapsed = drawerContent.classList.contains('collapsed');
+              if (isCollapsed) {
+                drawerContent.classList.remove('collapsed');
+                drawerToggle.classList.remove('collapsed');
+                drawerToggle.setAttribute('aria-expanded', 'true');
+              } else {
+                drawerContent.classList.add('collapsed');
+                drawerToggle.classList.add('collapsed');
+                drawerToggle.setAttribute('aria-expanded', 'false');
+              }
+            };
+            
+            drawerToggle.onclick = toggleSub;
+            drawerToggle.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSub();
+              }
+            };
+            
+            const subTitles = [
+              "Complexity of Objects",
+              "Complexity of Array",
+              "Complexity of Sensory Environment",
+              "Complexity of Faces"
+            ];
+            
+            for (let s = 0; s < 4; s++) {
+              let subTitle = document.createElement('div');
+              subTitle.classList.add('sub-title');
+              subTitle.textContent = subTitles[s];
+              drawerContent.appendChild(subTitle);
+              
+              for (let col = 0; col < numCols; col++) {
+                let button = document.createElement('button');
+                const valueText = values[col] === 0 ? '0' : values[col] === 1 ? '1' : String(values[col]).replace('0.', '.');
+                button.textContent = valueText;
+                button.dataset.value = values[col];
+                button.dataset.row = `sub-${s}`;
+                button.dataset.col = col;
+                button.classList.add('memory-btn');
+                button.setAttribute('aria-label', `Value ${valueText} for ${subTitles[s]}`);
+                button.onclick = () => handleButtonClick(button, `sub-${s}`);
+                button.onkeydown = (e) => handleKeyDown(e, `sub-${s}`, col);
+                drawerContent.appendChild(button);
+              }
+              
+              let placeholderButton = document.createElement('button');
+              const pLabel0 = document.createElement('span');
+              pLabel0.classList.add('placeholder-label');
+              pLabel0.textContent = 'Select';
+              placeholderButton.appendChild(pLabel0);
+              placeholderButton.style.fontSize = '14px';
+              placeholderButton.classList.add('placeholder', 'memory-btn');
+              placeholderButton.dataset.row = `sub-${s}`;
+              placeholderButton.dataset.col = 5;
+              placeholderButton.setAttribute('aria-label', `Mark to check: ${subTitles[s]}`);
+              placeholderButton.onclick = () => handlePlaceholderClick(placeholderButton, `sub-${s}`);
+              placeholderButton.onkeydown = (e) => handleKeyDown(e, `sub-${s}`, 5);
+              drawerContent.appendChild(placeholderButton);
+            }
+            
+            // Spacer to ensure visible gap after the last button row
+            let drawerSpacer = document.createElement('div');
+            drawerSpacer.style.gridColumn = '1 / -1';
+            drawerSpacer.style.height = '20px';
+            drawerContent.appendChild(drawerSpacer);
+
+            drawerWrapper.appendChild(drawerToggle);
+            drawerWrapper.appendChild(drawerContent);
+            grid.appendChild(drawerWrapper);
+          }
+
+          // Create a group for the row buttons (The main scoring row)
           let rowGroup = document.createElement('div');
           rowGroup.setAttribute('role', 'group');
           rowGroup.setAttribute('aria-labelledby', `characteristic-${row + 1}`);
           rowGroup.style.display = 'contents';
+
+          // Label above the Complexity total scoring row
+          if (row === 4) {
+            let complexityTotalTitle = document.createElement('div');
+            complexityTotalTitle.classList.add('complexity-total-title');
+            complexityTotalTitle.textContent = 'Complexity Section Total';
+            grid.appendChild(complexityTotalTitle);
+          }
+
           grid.appendChild(rowGroup);
 
           for (let col = 0; col < numCols; col++) {
             let button = document.createElement('button');
-            const valueText = values[col] === 0 ? '0' : values[col] === 1 ? '1' : `.${(values[col] * 100).toFixed(0)}`;
+            const valueText = values[col] === 0 ? '0' : values[col] === 1 ? '1' : String(values[col]).replace('0.', '.');
             button.textContent = valueText;
             button.dataset.value = values[col];
             button.dataset.row = row;
@@ -500,17 +1337,34 @@
           }
 
           let placeholderButton = document.createElement('button');
+          const pLabel = document.createElement('span');
+          pLabel.classList.add('placeholder-label');
+          pLabel.textContent = 'Select';
+          placeholderButton.appendChild(pLabel);
+          placeholderButton.style.fontSize = '14px';
+          placeholderButton.style.fontWeight = '700';
           placeholderButton.classList.add('placeholder');
           placeholderButton.dataset.row = row;
           placeholderButton.dataset.col = 5;
-          placeholderButton.setAttribute('aria-label', `Not assessed for ${titles[row].split('<')[0].trim()}`);
+          placeholderButton.setAttribute('aria-label', `Mark to check: ${titles[row].split('<')[0].trim()}`);
           placeholderButton.onclick = () => handlePlaceholderClick(placeholderButton, row);
           placeholderButton.onkeydown = (e) => handleKeyDown(e, row, 5);
           rowGroup.appendChild(placeholderButton);
+
+          // End-of-complexity-section divider after the scoring buttons
+          if (row === 4) {
+            let divider = document.createElement('div');
+            divider.classList.add('complexity-section-divider');
+            grid.appendChild(divider);
+          }
         }
       }
 
       function handleKeyDown(e, row, col) {
+        const isSub = typeof row === 'string' && row.startsWith('sub-');
+        let maxRows = isSub ? 4 : 10;
+        let currentRowIdx = isSub ? parseInt(row.split('-')[1]) : row;
+
         if (e.key === 'ArrowRight') {
           e.preventDefault();
           let nextCol = (col + 1) % 6;
@@ -520,17 +1374,19 @@
           e.preventDefault();
           let prevCol = (col - 1 + 6) % 6;
           const prevButton = document.querySelector(`[data-row='${row}'][data-col='${prevCol}']`);
-          if (prevButton) nextButton.focus();
+          if (prevButton) prevButton.focus();
         } else if (e.key === 'ArrowDown') {
           e.preventDefault();
-          let nextRow = (row + 1) % 10;
+          let nextRowIdx = (currentRowIdx + 1) % maxRows;
+          let nextRow = isSub ? `sub-${nextRowIdx}` : nextRowIdx;
           const nextButton = document.querySelector(`[data-row='${nextRow}'][data-col='${col}']`);
           if (nextButton) nextButton.focus();
         } else if (e.key === 'ArrowUp') {
           e.preventDefault();
-          let prevRow = (row - 1 + 10) % 10;
+          let prevRowIdx = (currentRowIdx - 1 + maxRows) % maxRows;
+          let prevRow = isSub ? `sub-${prevRowIdx}` : prevRowIdx;
           const prevButton = document.querySelector(`[data-row='${prevRow}'][data-col='${col}']`);
-          if (prevButton) nextButton.focus();
+          if (prevButton) prevButton.focus();
         }
       }
 
@@ -548,8 +1404,14 @@
         
         placeholderButton.classList.remove('active');
         placeholderButton.classList.add('selected');
+        placeholderButton.querySelector('.placeholder-label').textContent = 'Done';
         
+        const val = button.dataset.value;
+        const title = getCharTitle(button.dataset.row);
+        speak(title + ', ' + (VALUE_WORDS[val] || val));
+        haptic(12);
         updateTotal();
+        if (!String(button.dataset.row).startsWith('sub-')) speakTotal();
         announceSelection(button);
         isDataEntered = true;
       }
@@ -560,35 +1422,55 @@
         if (button.classList.contains('active')) {
           button.classList.remove('active');
           button.setAttribute('aria-pressed', 'false');
+          button.querySelector('.placeholder-label').textContent = 'Select';
+          speak(getCharTitle(button.dataset.row) + ', cleared');
+          haptic(8);
         } else {
           buttonsInRow.forEach(btn => {
             btn.classList.remove('active', 'selected');
             btn.setAttribute('aria-pressed', 'false');
+            if (btn.classList.contains('placeholder')) btn.querySelector('.placeholder-label').textContent = 'Select';
           });
           button.classList.add('active');
           button.classList.remove('selected');
           button.setAttribute('aria-pressed', 'true');
+          button.querySelector('.placeholder-label').textContent = 'Review';
+          speak(getCharTitle(button.dataset.row) + ', review');
+          haptic([12, 60, 12]);
         }
         
         updateTotal();
+        if (!String(button.dataset.row).startsWith('sub-')) speakTotal();
         announceSelection(button);
         isDataEntered = true;
       }
 
       function announceSelection(button) {
         const row = button.dataset.row;
-        const titleElement = document.getElementById(`characteristic-${parseInt(row) + 1}`);
-        const title = titleElement ? titleElement.textContent.split('\n')[0].trim() : 'Characteristic';
-        const value = button.classList.contains('placeholder') ? 'Not assessed' : button.textContent;
+        let title = 'Characteristic';
         
-        // Use aria-live region to announce the selection
+        if (typeof row === 'string' && row.startsWith('sub-')) {
+          const subTitles = [
+            "Complexity of Objects",
+            "Complexity of Array",
+            "Complexity of Sensory Environment",
+            "Complexity of Faces"
+          ];
+          const idx = parseInt(row.split('-')[1]);
+          title = subTitles[idx];
+        } else {
+          const titleElement = document.getElementById(`characteristic-${parseInt(row) + 1}`);
+          title = titleElement ? titleElement.textContent.split('\n')[0].trim() : 'Characteristic';
+        }
+        
+        const value = button.classList.contains('placeholder') ? 'Marked for review' : button.textContent;
+        
         const liveRegion = document.createElement('div');
         liveRegion.setAttribute('aria-live', 'assertive');
         liveRegion.setAttribute('class', 'visually-hidden');
         liveRegion.textContent = `${title} set to ${value}`;
         document.body.appendChild(liveRegion);
         
-        // Remove after announcement
         setTimeout(() => {
           document.body.removeChild(liveRegion);
         }, 1000);
@@ -598,7 +1480,8 @@
         let total = 0;
         let scoredCharacteristics = 0;
         
-        document.querySelectorAll('.button-grid button.active:not(.placeholder)').forEach(button => {
+        // Excludes placeholder buttons AND the newly added memory aid buttons from the total
+        document.querySelectorAll('.button-grid button.active:not(.placeholder):not(.memory-btn)').forEach(button => {
           total += parseFloat(button.dataset.value);
           scoredCharacteristics++;
         });
@@ -613,9 +1496,36 @@
         if (scoredCharacteristics === 10) {
           warningElement.classList.add('success');
           warningElement.setAttribute('aria-label', 'All 10 characteristics have been scored. Total is ' + total.toFixed(2));
+          if (!wasAllScored) {
+            wasAllScored = true;
+            setTimeout(() => speak('All characteristics scored. Total, ' + numberToWords(total)), settings.voiceTotal ? 0 : 50);
+          }
         } else {
           warningElement.classList.remove('success');
           warningElement.setAttribute('aria-label', scoredCharacteristics + ' out of 10 characteristics scored. Total is ' + total.toFixed(2));
+          wasAllScored = false;
+        }
+
+        const bar = document.getElementById('progressBar');
+        const pct = (scoredCharacteristics / 10) * 100;
+        if (bar) { bar.style.width = pct + '%'; bar.classList.toggle('complete', scoredCharacteristics === 10); }
+
+        // Update segmented progress bar and row dots
+        for (let i = 0; i < 10; i++) {
+          const seg = document.querySelector(`.progress-segment[data-seg="${i}"]`);
+          const dot = document.getElementById(`row-dot-${i}`);
+          const hasValue = document.querySelector(`.button-grid button.active[data-row="${i}"]:not(.placeholder):not(.memory-btn)`);
+          const hasNA    = document.querySelector(`.button-grid button.placeholder.active[data-row="${i}"]`);
+          [seg, dot].forEach(el => {
+            if (!el) return;
+            el.classList.toggle('scored', !!hasValue);
+            el.classList.toggle('na', !hasValue && !!hasNA);
+          });
+          if (seg) {
+            seg.classList.remove('na'); // Review state does not fill progress bar
+            const state = hasValue ? 'done' : hasNA ? 'review' : 'unselected';
+            seg.setAttribute('aria-label', `Characteristic ${i + 1}: ${state}`);
+          }
         }
       }
 
@@ -623,11 +1533,12 @@
         document.querySelectorAll('.button-grid button').forEach(button => {
           button.classList.remove('active', 'selected');
           button.setAttribute('aria-pressed', 'false');
+          if (button.classList.contains('placeholder')) button.querySelector('.placeholder-label').textContent = 'Select';
         });
         
         updateTotal();
+        speak('All cleared');
         
-        // Announce clearing
         const liveRegion = document.createElement('div');
         liveRegion.setAttribute('aria-live', 'assertive');
         liveRegion.setAttribute('class', 'visually-hidden');
@@ -641,7 +1552,6 @@
         isDataEntered = false;
       }
 
-      // Handle escape key to clear focus
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
           document.activeElement.blur();
@@ -650,21 +1560,293 @@
 
       createButtonGrid();
 
-      document.getElementById('allClearButton').addEventListener('click', clearAllSelections);
+      // Set today's date as default
+      document.getElementById('assessmentDate').valueAsDate = new Date();
 
-      // Add event listener for beforeunload event with improved reliability
+      const allClearBtn = document.getElementById('allClearButton');
+      const allClearConfirmRow = document.getElementById('allClearConfirmRow');
+
+      let clearConfirmTimeout = null;
+
+      function showClearConfirm() {
+        allClearBtn.textContent = 'Clear all — are you sure?';
+        allClearBtn.classList.add('confirming');
+        allClearConfirmRow.classList.add('visible');
+        document.getElementById('allClearNo').focus();
+        speak('Clear all. Are you sure?');
+        haptic([20, 80, 20, 80, 20]);
+        clearConfirmTimeout = setTimeout(cancelClearConfirm, 6000);
+      }
+
+      function cancelClearConfirm() {
+        clearTimeout(clearConfirmTimeout);
+        allClearBtn.textContent = 'Clear All';
+        allClearBtn.classList.remove('confirming');
+        allClearConfirmRow.classList.remove('visible');
+        allClearBtn.focus();
+      }
+
+      allClearBtn.addEventListener('click', () => {
+        if (!allClearBtn.classList.contains('confirming')) showClearConfirm();
+      });
+      document.getElementById('allClearNo').addEventListener('click', () => { haptic(8); cancelClearConfirm(); });
+      document.getElementById('allClearYes').addEventListener('click', () => {
+        haptic([30, 60, 30, 60, 30]);
+        cancelClearConfirm();
+        clearAllSelections();
+      });
+
+      document.getElementById('exportPdfBtn').addEventListener('click', exportPDF);
+
+      function exportPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+        const initials = document.getElementById('clientInitials').value.trim() || '-';
+        const dateVal  = document.getElementById('assessmentDate').value;
+        const dateStr  = dateVal
+          ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+          : '-';
+
+        const margin = 18;
+        const pageW  = 210;
+        const colW   = pageW - margin * 2;
+
+        // ── Palette ──
+        const C = {
+          slate:      [38,  50,  72],   // header bar, table head
+          slateLight: [74,  95, 130],   // accents
+          ink:        [28,  30,  36],   // main body text
+          mid:        [90,  96, 110],   // secondary text
+          rule:       [210,215,222],    // light rule lines
+          rowAlt:     [248,250,253],    // alternate row tint
+          subBg:      [237,243,252],    // subcategory row bg
+          subText:    [55,  80, 130],   // subcategory text
+          totalBg:    [240,245,255],    // total box bg
+          white:      [255,255,255],
+        };
+
+        // ── Top accent bar ──
+        doc.setFillColor(...C.slate);
+        doc.rect(0, 0, pageW, 10, 'F');
+
+        // ── Title in bar ──
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(255, 255, 255);
+        doc.text('CVI RANGE RATING II', margin, 6.8);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(170, 195, 230);
+        doc.text('Assessment Record', margin + 62, 6.8);
+
+        // ── Subtitle ──
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(9);
+        doc.setTextColor(...C.mid);
+        doc.text('Based on Dr. Roman-Lantzy\u2019s Within-CVI Characteristics Assessment Method', margin, 17);
+
+        // ── Meta info box ──
+        doc.setFillColor(...C.rowAlt);
+        doc.setDrawColor(...C.rule);
+        doc.roundedRect(margin, 21, colW, 13, 1.5, 1.5, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...C.slateLight);
+        doc.text('INITIALS', margin + 4, 26.5);
+        doc.text('ASSESSMENT DATE', margin + 88, 26.5);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(...C.ink);
+        doc.text(initials, margin + 4, 31.5);
+        doc.text(dateStr, margin + 88, 31.5);
+
+        // ── Section heading ──
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...C.slateLight);
+        doc.text('CHARACTERISTICS & SCORES', margin, 42);
+        doc.setDrawColor(...C.slateLight);
+        doc.setLineWidth(0.4);
+        doc.line(margin + 54, 41, pageW - margin, 41);
+
+        let y = 48;
+
+        // ── Helper to get active value for a data-row ──
+        function getScore(rowId) {
+          const active = document.querySelector(`button.active[data-row='${rowId}']:not(.placeholder)`);
+          const na     = document.querySelector(`button.placeholder.active[data-row='${rowId}']`);
+          if (active) return active.dataset.value;
+          if (na)     return 'N/A';
+          return '-';
+        }
+
+        const mainTitles = [
+          '1. Color Preference',
+          '2. Need for Movement',
+          '3. Visual Latency',
+          '4. Visual Field Preferences',
+          '5. Difficulty With Visual Complexity',
+          '6. Need for Light',
+          '7. Difficulty with Distance Viewing',
+          '8. Atypical Visual Reflexes',
+          '9. Difficulty With Visual Novelty',
+          '10. Absence of Visually Guided Reach'
+        ];
+        const subTitles = [
+          'Complexity of Objects',
+          'Complexity of Array',
+          'Complexity of Sensory Environment',
+          'Complexity of Faces'
+        ];
+
+        // ── Scores table ──
+        const rows = [];
+        for (let i = 0; i < 10; i++) {
+          rows.push([mainTitles[i], getScore(i)]);
+          // After row 4 (Visual Complexity) insert subcategory rows
+          if (i === 4) {
+            subTitles.forEach((st, si) => {
+              rows.push(['    - ' + st, getScore(`sub-${si}`)]);
+            });
+          }
+        }
+
+        const tableW = 130;
+        const tableX = (pageW - tableW) / 2;
+        doc.autoTable({
+          startY: y,
+          head: [['Characteristic', 'Score']],
+          body: rows,
+          margin: { left: tableX, right: pageW - tableX - tableW, bottom: 60 },
+          tableWidth: tableW,
+          styles: {
+            font: 'helvetica',
+            fontSize: 10,
+            cellPadding: { top: 3.5, bottom: 3.5, left: 5, right: 5 },
+            textColor: [28, 30, 36],
+            lineColor: [210, 215, 222],
+            lineWidth: 0.3,
+            fillColor: [255, 255, 255],
+          },
+          headStyles: {
+            fillColor: [38, 50, 72],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            fontSize: 10,
+            cellPadding: { top: 4, bottom: 4, left: 5, right: 5 },
+          },
+          columnStyles: {
+            0: { cellWidth: tableW - 26 },
+            1: { cellWidth: 26, halign: 'center', fontStyle: 'bold' },
+          },
+          didParseCell: function(data) {
+            if (data.section === 'body') {
+              const isSubRow = data.row.index > 4 && data.row.index < 9;
+              if (isSubRow) {
+                data.cell.styles.fillColor = [237, 243, 252];
+                data.cell.styles.textColor = [55, 80, 130];
+                data.cell.styles.fontSize  = 9.5;
+              } else if (data.row.index % 2 === 0) {
+                data.cell.styles.fillColor = [248, 250, 253];
+              }
+              // Score column colouring
+              if (data.column.index === 1) {
+                const val = data.cell.raw;
+                if (val === 'N/A') {
+                  data.cell.styles.textColor = [130, 100, 30];
+                } else if (val !== '-') {
+                  data.cell.styles.textColor = [38, 50, 72];
+                } else {
+                  data.cell.styles.textColor = [160, 165, 175];
+                }
+              }
+            }
+          },
+        });
+
+        y = doc.lastAutoTable.finalY + 2;
+
+        // ── Total box ──
+        let total = 0, count = 0;
+        for (let i = 0; i < 10; i++) {
+          const v = getScore(i);
+          if (v !== '-' && v !== 'N/A') { total += parseFloat(v); count++; }
+        }
+        y += 4;
+        // Outer box
+        doc.setFillColor(240, 245, 255);
+        doc.setDrawColor(74, 95, 130);
+        doc.setLineWidth(0.5);
+        doc.roundedRect(margin, y, colW, 22, 2, 2, 'FD');
+        // Left accent strip
+        doc.setFillColor(38, 50, 72);
+        doc.roundedRect(margin, y, 4, 22, 1, 1, 'F');
+        // Label
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(74, 95, 130);
+        doc.text('CVI RANGE RATING II TOTAL', margin + 8, y + 7);
+        // Score
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18);
+        doc.setTextColor(28, 30, 36);
+        doc.text(total.toFixed(2), margin + 8, y + 17);
+        // Sub-label
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(90, 96, 110);
+        doc.text(`${count} of 10 characteristics scored`, margin + 28, y + 17);
+
+        // ── Footer ──
+        const pageH = 297;
+        const footerY = pageH - 28;
+
+        // Attribution statement — full width, above the rule
+        doc.setFillColor(240, 245, 255);
+        doc.setDrawColor(210, 215, 222);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(margin, footerY - 7, colW, 9, 1, 1, 'FD');
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(8);
+        doc.setTextColor(38, 50, 72);
+        doc.text(
+          'The CVI Range Rating II assessment method and calculation process are the work of Dr. Christine Roman-Lantzy.',
+          pageW / 2, footerY - 2,
+          { align: 'center' }
+        );
+
+        // Rule
+        doc.setDrawColor(210, 215, 222);
+        doc.setLineWidth(0.3);
+        doc.line(margin, footerY + 4, pageW - margin, footerY + 4);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(38, 50, 72);
+        doc.text('CVI Range Rating II Calculator App', margin, footerY + 9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(90, 96, 110);
+        doc.text('by Niall Brown, Early Childhood Vision Consultant', margin, footerY + 14);
+        // Full citation — right-aligned, split across two lines
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(7.5);
+        doc.setTextColor(90, 96, 110);
+        doc.text('Roman-Lantzy, C. (2018). Cortical Visual Impairment: An Approach to Assessment', pageW - margin, footerY + 10, { align: 'right' });
+        doc.text('and Intervention (2nd ed.). American Printing House for the Blind.', pageW - margin, footerY + 15, { align: 'right' });
+
+        const filename = `CVI-Range-${initials.replace(/[^a-zA-Z0-9]/g, '')}-${dateVal || 'undated'}.pdf`;
+        doc.save(filename);
+      }
+
       window.addEventListener('beforeunload', function (e) {
         if (isDataEntered) {
-          // Standard message (browsers will ignore this and show their own message)
           const message = 'You have unsaved data. Are you sure you want to leave?';
           e.returnValue = message;
           return message;
         }
       });
 
-      // Add unload confirmation dialog via native browser dialog
       window.addEventListener('pagehide', function() {
-        // This will trigger the browser's beforeunload handler set above
       });
     });
   </script>
